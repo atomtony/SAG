@@ -1,505 +1,399 @@
-<div align="center">
+<p align="center">
+  <img src="docs/assets/logo.svg" alt="Zleap AI" width="220" />
+</p>
 
+# SAG
 
-# 🌟 SAG
+本项目是基于 SAG 制作的开箱即用的文档检索工作台：上传 Markdown / TXT 文档后，系统会自动完成切片、向量化、事项提取、实体提取和关系整理。你可以像使用 ChatGPT 一样围绕项目资料连续提问，也可以查看每个文档的切片、事项、实体、Embedding、搜索过程、原始模型日志和知识图谱。
 
-**SQL驱动的RAG引擎 · 查询时自动构建知识图谱**
+![SAG 对话工作台](docs/assets/sag-chat.png)
 
-*The SQL-Driven Smart Auto Graph Engine*
+## RAG 领域新 SOTA
 
-[![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat-square&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/Zleap-AI/SAG)
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
+论文复现代码：[Zleap-AI/SAG-Benchmark](https://github.com/Zleap-AI/SAG-Benchmark)
 
-**by [Zleap.AI](https://zleap.ai)** · Open Source · Production Ready
+SAG 是面向 Agent 的新一代 RAG 技术路线。它解决的不是“再多塞几个 chunk 给模型”，而是重新设计数据进入检索系统的方式。
 
-<a href="README_en.md">English</a> | <a href="README.md">中文</a>
+传统向量 RAG 只知道文本“像不像”，但不知道“谁和谁发生了什么关系”。GraphRAG 意识到了结构的重要性，但很多方案依赖三元组抽取、实体合并、社区发现和全局图排序，构建和维护成本很高。
 
-</div>
-
----
-
-
-https://github.com/user-attachments/assets/e03567a5-2cc4-4d09-aab9-01277d8d4457
-
-
----
-
-## 🌟 SAG 是什么？
-
-> [入门版原理介绍](https://mp.weixin.qq.com/s/dmrLphM3bLBC2Nj1xsfdHg)
-
-**SAG**是SQL驱动的新一代 RAG 引擎，可以在查询时自动构建知识图谱
-
-  - 把原始文本自动拆解成“**语义原子事件**”  
-  - 为每个事件抽取多维“**自然语言向量（多维度实体）**”  
-  - 在 **查询时动态构建关系网络**，而不是预先维护知识图谱
-
-### 核心能力
-
-- **自动理解**：AI自动将文档拆解为原子性的事件
-- **智能关联**：检索时动态构建关系网络，无需预先维护图谱
-- **精准召回**：三阶段搜索（Recall → Expand → Rerank），找到最相关的信息
-- **完整溯源**：每个结果都能追溯来源和关联链路
-- **灵活扩展**：支持自定义实体类型，适配任何业务场景
-
-### 适合谁？
-  - 👨‍💻 **普通开发者**：想要一个好用、易部署、可定制的本地 / 企业 RAG 引擎  
-  - 🏢 **企业技术团队**：需要可审计、可控、私有化部署的知识中台  
-  - 🧑‍🔬 **研究人员**：对 GraphRAG / RAG+KG 感兴趣，想深入算法与数学分析
-
----
-
-## 💡 应用场景
-
-SAG 最初来源于一个核心问题：**如何在不维护庞大知识图谱的前提下，让机器真正“理解”和“关联”海量文本？**
-
-- **从产品视角**：一个可以托管你所有文档、对话、业务数据的“**数据智能引擎**”  
-- **从技术视角**：一种 **Event-Centric 的动态知识图谱构建算法**，在查询时按需生成图结构  
-- **从实现视角**：组合 **SQL 精确检索 + 向量语义搜索 + PageRank** 的三阶段搜索系统
-
-
-<table>
-<tr>
-<td width="33%">
-
-
-#### 📚 个人知识管理
-
-```
-痛点：
-• 笔记分散，难以查找
-• 信息孤岛，关联性差
-• 手动整理费时费力
-
-解决：
-✓ 自动拆分知识卡片
-✓ 智能标注实体关系
-✓ 秒级多维度检索
-```
-
-</td>
-<td width="33%">
-
-#### 👥 团队协作文档
-
-```
-痛点：
-• 版本混乱，信息冗余
-• 决策分散，难以追溯
-• 新人上手成本高
-
-解决：
-✓ 自动提取决策点
-✓ 追踪信息演进
-✓ 快速生成报告
-```
-
-</td>
-<td width="33%">
-
-#### 🔬 研究分析助手
-
-```
-痛点：
-• 文献量大，难抽重点
-• 手动标注耗时长
-• 关系发现靠直觉
-
-解决：
-✓ 自动提取论点
-✓ 构建主题网络
-✓ 发现隐含关联
-```
-
-</td>
-</tr>
-</table>
-
-
-### 与传统方案对比
-
-|              | 传统RAG  | GraphRAG | SAG      |
-| ------------ | -------- | -------- | -------- |
-| **数据组织** | 固定切块 | 预构建图 | 事件化   |
-| **关系维护** | 无       | 静态存储 | 动态计算 |
-| **扩展性**   | ⭐⭐       | ⭐⭐⭐      | ⭐⭐⭐⭐⭐    |
-| **维护成本** | 低       | 高       | 低       |
-| **检索精度** | ⭐⭐       | ⭐⭐⭐⭐     | ⭐⭐⭐⭐⭐    |
-| **适用场景** | 简单问答 | 深度问答 | 全场景   |
-
----
-
-## 🎯 核心特性
-
-### 1. 系统架构一览
-
-
-SAG 的系统设计直接对应其算法设计：**存储时“事件化”，查询时“图谱化”**。
+SAG 选择了更轻、更适合生产的结构：
 
 ```text
-┌─────────────────────────────────────────────┐
-│                Data Processing 数据处理     │
-│  LOAD   ─→   EXTRACT   ─→   INDEX          │
-│  加载        事件提取        索引（向量+SQL）│
-└────────────────────┬───────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────┐
-│                Storage 存储层              │
-│  • MySQL: 事件 / 实体 / 事件-实体关系      │
-│  • Elasticsearch / VecDB: 向量检索         │
-└────────────────────┬───────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────┐
-│               Search 检索层                │
-│  Recall  ─→  Expand  ─→  Rerank            │
-│  实体召回      多跳扩展      智能排序       │
-└─────────────────────────────────────────────┘
+chunk -> event
+chunk -> entities
+event <-> entities
 ```
 
-### 2. 灵活的实体维度系统
+一个 chunk 只提取一个完整事项 event，同时从原文中提取多个 entities。event 保留完整语义，entities 负责建立索引和关系扩展。这是一种“一事项对多实体”的超边结构，不再把知识拆成大量脆弱的 `subject -> predicate -> object` 三元组。
 
-**系统默认（5W1H）**：
+![SAG 架构图](docs/assets/paper-sag-architecture.jpeg)
 
-| 维度       | 含义 | 权重 | 示例                              |
-| ---------- | ---- | ---- | --------------------------------- |
-| 🕐 TIME     | 时间 | 0.9  | "2024年6月", "每周一", "昨天下午" |
-| 📍 LOCATION | 地点 | 1.0  | "会议室A", "北京", "线上群聊"     |
-| 👤 PERSON   | 人员 | 1.1  | "张三", "产品经理", "客户"        |
-| 🎯 TOPIC    | 话题 | 1.5  | "大模型优化", "项目延期"          |
-| ⚡ ACTION   | 行为 | 1.2  | "决定", "完成", "优化"            |
-| 🏷️ TAGS     | 标签 | 1.0  | "技术", "紧急", "待跟进"          |
+SAG 的核心优势：
 
-**自定义扩展**：
+- **更适合多跳问题**：从命中事项出发，通过实体关系继续扩展相关事项。
+- **不是重型知识图谱**：不依赖全局 PageRank，也不需要每次增量数据都重建整张图。
+- **可大规模落地**：事项、实体、关系、向量都存进 PostgreSQL / pgvector，用 SQL 做稳定多跳。
+- **对 Agent 更友好**：用更少的候选结果更早命中关键证据，减少后续 LLM 阅读成本。
+- **可追溯**：最终回答仍然回到原文切片，便于查看证据。
 
-```python
-# 项目管理场景
-custom_entities = [
-    EntityType(type="project_stage", name="项目阶段", weight=1.2),
-    EntityType(type="risk_level", name="风险等级", weight=1.3)
-]
+## Benchmark
 
-# 医疗场景
-custom_entities = [
-    EntityType(type="symptom", name="症状", weight=1.4),
-    EntityType(type="diagnosis", name="诊断", weight=1.5)
-]
+在相同配置下：
+
+```text
+Embedding = bge-large-en-v1.5
+LLM = qwen3.6-flash
+Datasets = HotpotQA / 2WikiMultiHop / MuSiQue
 ```
 
-### 3. 三阶段智能搜索
+SAG 对比 HippoRAG 2 在多跳问答召回上取得了明显提升。最关键的是 **平均 Recall@2 从 68.14% 提升到 79.30%，提升 11.16 个百分点，相对提升约 16.4%**。
 
-```
-阶段1: Recall - 实体召回
-├─ LLM理解查询意图
-├─ 提取结构化实体
-├─ 向量检索相关实体
-└─ 定位关联事件
-    
-阶段2: Expand - 多跳扩展
-├─ 从初始事件出发
-├─ 通过共同实体发现关联
-├─ BFS多跳探索（深度可配）
-└─ 构建完整关系网络
-    
-阶段3: Rerank - 智能排序
-├─ PageRank计算重要性
-├─ 综合：实体权重+时间+相似度
-├─ 方向性权重（重要事件权重大）
-└─ 返回Top-N + 线索链
+![SAG Benchmark 简图](docs/assets/sag-benchmark-simple.png)
+
+为什么 Recall@2 很重要？因为 Agent 不希望每次拿回一大堆上下文。更少结果里更早命中关键证据，意味着更低 token 成本、更低延迟、更少干扰，也意味着多轮任务里错误不容易层层放大。
+
+其他关键结果：
+
+- MuSiQue Recall@5：SAG 80.04%，HippoRAG 2 65.13%，提升 14.91 个百分点。
+- SAG 换成 NV-Embed-v2 后，MuSiQue Recall@5 进一步到 81.71%，说明提升主要来自结构设计，而不是单纯堆 embedding 模型。
+- 三元组式 1-n-2 结构在 MuSiQue Recall@5 为 63.78%，SAG 的一事项多实体超边结构为 80.04%。
+
+## SAG 能做什么
+
+这个项目把 SAG 技术做成了一个可以直接运行的本地工作台，适合：
+
+- 项目文档问答
+- 个人知识库检索
+- RAG / Agent 原型验证
+- 文档事项和实体分析
+- MCP 工具接入测试
+- 检索链路调试和模型调用观察
+
+核心功能：
+
+- **项目管理**：每个项目拥有自己的文档、对话、图谱和 MCP 配置。
+- **多文档上传**：支持一次上传多个 Markdown / TXT 文档，展示处理阶段和进度。
+- **文档处理结果**：查看切片、事项、实体、Embedding 数据，支持标题关键字搜索和分页浏览。
+- **对话式检索**：围绕当前项目资料多轮提问，支持流式输出和停止生成。
+- **引用原文**：回答里可以显示引用序号，点击查看对应原文块。
+- **搜索过程可视化**：右侧面板实时展示 SAG 内部检索链路和耗时。
+- **原始日志**：浏览器缓存中可查看 LLM / Embedding / Rerank 原始请求和返回。
+- **知识图谱**：以实体和事项为节点查看项目关系，可拖动、缩放、展开和查看详情。
+- **MCP 接入**：每个项目都有自己的 MCP 配置，外部 Agent 可直接调用当前项目资料。
+
+## 技术栈
+
+SAG 使用 TypeScript 贯穿前后端。前端是 React + Vite + Tailwind CSS 的 WebUI；后端是 Fastify HTTP API、MCP TypeScript SDK 和分层服务模块；数据层使用 PostgreSQL、pgvector、全文检索和 SQL 多跳查询；模型侧兼容 OpenAI-compatible 的 LLM、Embedding 和 Rerank 接口。
+
+## 工作台预览
+
+### 文档处理
+
+在「文档」页可以上传文档，查看处理状态、切片、事项、实体和 Embedding。
+
+![SAG 文档视图](docs/assets/sag-documents.png)
+
+### 图谱浏览
+
+在「图谱」页可以查看项目内实体和事项关系。节点可以拖动、缩放，点击展开，双击打开详情。
+
+![SAG 图谱视图](docs/assets/sag-graph.png)
+
+### 对话检索
+
+在「对话」页可以围绕当前项目资料连续提问。每次检索都会刷新右侧搜索过程，方便调试本轮调用链路。
+
+## 检索模式
+
+SAG 提供两种模式：
+
+- **极速模式**：直接用 query 在实体库做全文 / BM25 匹配，结合 SAG 多跳扩展，最后用 `qwen3-rerank` 选择 top-k。这个模式不需要 LLM 抽 query 实体，也不需要 LLM 过滤候选，速度更快。
+- **标准模式**：用 LLM 抽取 query 实体，再走 SAG 多路召回和 LLM 精排，适合对比更高精度链路。
+
+两种模式都不是普通向量搜索，因为它们都使用 SAG 的 event/entity 索引和 SQL 多跳扩展。
+
+## 快速开始
+
+### 1. 准备环境
+
+你需要：
+
+- Node.js 20 或更高版本
+- npm
+- PostgreSQL
+- pgvector
+
+如果你只是想最快跑起来，推荐用 Docker 启动 PostgreSQL。
+
+### 2. 克隆项目
+
+```bash
+git clone https://github.com/Zleap-AI/SAG.git
+cd SAG
 ```
 
-**可解释性示例**：
+### 3. 创建配置文件
+
+```bash
+cp .env.example .env
+```
+
+`.env.example` 已经包含默认配置。真实使用时，请填入自己的 LLM 和 Embedding API Key。
+
+### 4. 启动 PostgreSQL
+
+使用 Docker：
+
+```bash
+docker compose up -d
+```
+
+不想用 Docker，也可以在 macOS 上用 Homebrew：
+
+```bash
+brew install postgresql@17 pgvector
+brew services start postgresql@17
+
+/opt/homebrew/opt/postgresql@17/bin/createdb sag_lite
+/opt/homebrew/opt/postgresql@17/bin/psql -d sag_lite -c 'create extension if not exists vector;'
+```
+
+如果你使用本机 PostgreSQL，请把 `.env` 里的 `DATABASE_URL` 改成自己的连接地址，例如：
+
+```env
+DATABASE_URL=postgres://你的用户名@localhost:5432/sag_lite
+```
+
+### 5. 安装依赖并初始化数据库
+
+```bash
+npm install
+npm run db:setup
+```
+
+### 6. 启动开发服务
+
+```bash
+npm run dev
+```
+
+开发模式默认地址：
+
+```text
+WebUI: http://localhost:5173
+API:   http://localhost:4173
+```
+
+### 7. 构建并启动生产服务
+
+```bash
+npm run build
+npm start
+```
+
+生产模式默认地址：
+
+```text
+http://localhost:4173
+```
+
+## 第一次怎么用
+
+1. 打开 WebUI。
+2. 在左侧项目列表顶部点击「新建项目」。
+3. 进入「文档」页，点击「添加文档」。
+4. 上传 `.md` 或 `.txt` 文件。
+5. 等待处理队列完成。
+6. 查看切片、事项、实体和 Embedding 状态。
+7. 回到「对话」页，围绕当前项目资料提问。
+8. 需要调试时，查看右侧「搜索过程」和「原始日志」。
+9. 需要看关系时，进入「图谱」页。
+10. 需要给外部 Agent 使用时，进入「MCP」页复制当前项目的配置。
+
+## 配置 LLM 和 Embedding
+
+SAG 支持 OpenAI-compatible 接口。默认示例：
+
+```env
+EMBEDDING_BASE_URL=https://api.302ai.cn/v1
+EMBEDDING_MODEL=text-embedding-3-large
+EMBEDDING_DIMENSIONS=1024
+
+LLM_BASE_URL=https://api.302ai.cn/v1
+LLM_MODEL=qwen3.6-flash
+
+RERANK_MODEL=qwen3-rerank
+DEFAULT_SEARCH_MODE=fast
+```
+
+你可以通过两种方式配置：
+
+### 方式一：WebUI 全局设置
+
+点击左侧顶部的设置图标，进入全局设置页，填写 provider、模型名和 API Key。
+
+API Key 只会显示“已配置 / 未配置”，不会在界面和接口响应里明文回显。
+
+### 方式二：`.env`
+
+```env
+EMBEDDING_API_KEY=你的_embedding_key
+LLM_API_KEY=你的_llm_key
+```
+
+如果没有配置 API Key，系统会使用本地 deterministic fallback，方便跑测试和看界面；真实检索效果请配置远程模型。
+
+## MCP 接入
+
+SAG 可以作为 MCP Server 提供给外部 Agent 使用。每个项目的 MCP 都会绑定当前项目 ID，工具调用时不需要再传 `projectId`。
+
+在 WebUI 里进入「MCP」页，可以看到当前项目自动生成的 `mcpServers` JSON。格式类似：
 
 ```json
 {
-  "event": "MoE架构的稀疏专家层设计",
-  "score": 0.89,
-  "clues": [
-    {
-      "stage": "recall",
-      "from": "Query: 大模型优化",
-      "to": "Entity: MoE架构",
-      "confidence": 0.92
-    },
-    {
-      "stage": "expand", 
-      "from": "Event: MoE架构优势",
-      "to": "Event: 稀疏专家层设计",
-      "shared_entities": ["MoE架构", "专家层"],
-      "confidence": 0.85
+  "mcpServers": {
+    "sag": {
+      "command": "npm",
+      "args": ["run", "mcp"],
+      "env": {
+        "SAG_MCP_SOURCE_ID": "当前项目ID"
+      }
     }
-  ]
+  }
 }
 ```
 
----
+当前提供的 MCP 工具：
 
-## 🚀 快速开始
+- `sag_ingest_document`：导入文档并执行切片、事项抽取、实体抽取和向量化。
+- `sag_search`：对当前项目执行 SAG 多路检索，并返回内部检索 trace。
+- `sag_explain_search`：返回当前项目的检索链路说明和 trace。
+- `sag_get_event`：按事件 ID 查询事件详情。
 
-### 方式一：Docker Compose（推荐）
+## HTTP API 示例
 
-```bash
-# 1. 克隆项目
-git clone https://github.com/Zleap-AI/SAG.git
-cd SAG
-
-# 2. 配置环境
-cp .env.example .env
-# 编辑 .env：
-#   LLM_API_KEY=sk-xxx
-#   MYSQL_PASSWORD=your_password
-
-# 3. 下载资源 （首次执行）
-python scripts/download_nltk_data.py
-
-# 4. 启动服务
-docker compose up -d
-
-# 5. 访问
-# 前端: http://localhost
-# API: http://localhost/api/docs
-```
-
-### 方式二：Python SDK
-
-```python
-import asyncio
-from sag import SAGEngine
-from sag.modules.load.config import LoadBaseConfig
-from sag.modules.extract.config import ExtractBaseConfig
-from sag.modules.search.config import SearchBaseConfig
-
-async def main():
-    # 初始化
-    engine = SAGEngine(source_config_id="my-project")
-    
-    # 加载文档
-    await engine.load(LoadBaseConfig(
-        type="path",
-        origin=["./docs/article.md"],
-        background="技术文档"
-    ))
-    
-    # 提取事件
-    await engine.extract(ExtractBaseConfig(
-        parallel=True,
-        background="AI大模型文档"
-    ))
-    
-    # 智能检索
-    result = await engine.search(SearchBaseConfig(
-        query="如何优化大模型推理速度？",
-        depth=2,
-        top_k=10
-    ))
-    
-    # 查看结果
-    for event in result.events:
-        print(f"[{event.score:.2f}] {event.title}")
-        print(f"  {event.summary}\n")
-
-asyncio.run(main())
-```
-
-### 方式三：Web界面
-
-访问 http://localhost:3000
-
-1. **上传文档**：拖拽 Markdown、PDF、HTML
-2. **自动处理**：系统自动加载→提取→索引
-3. **智能搜索**：输入自然语言查询
-4. **查看结果**：浏览事件、线索图谱、来源
-
-
-
----
-
-## 🌐 开源版 vs 完整版
-
-### 功能对比
-
-| 功能         | 开源基础版 | [完整版](https://zleap.ai) |
-| ------------ | ---------- | -------------------------- |
-| **核心引擎** | ✅ 完整开源 | ✅ 相同引擎                 |
-| **文档加载** | ✅ 本地文件 | ✅ 多种信息源               |
-| **数据源**   | ✅ 手动上传 | ✅ 自动更新                 |
-| **内容发布** | ❌          | ✅ 一键生成文章/报告        |
-| **协作**     | ❌ 单用户   | ✅ 团队 + 权限管理          |
-| **高级功能** | ❌          | ✅ 智能推荐 + 自动摘要      |
-| **云服务**   | ❌ 需自建   | ✅ 开箱即用                 |
-| **支持**     | 社区       | 专业技术团队               |
-
-### 为什么开源基础版？
-
-我们相信：
-
-- 🌍 **技术共享**：核心算法应该被更多人使用和改进
-- 🔧 **灵活部署**：企业可自建私有化部署
-- 🤝 **社区驱动**：开源社区的反馈让产品更好
-- 💡 **创新激励**：开发者可基于SAG构建自己的应用
-
-### 什么时候用完整版？
-
-- 需要自动网页追踪和信息流管理
-- 想接入更多信息源
-- 需要团队协作和权限管理
-- 希望零部署，开箱即用
-- 需要专业技术支持
-
-**体验完整版**：[https://zleap.ai](https://zleap.ai)
-
-
-
----
-## 📖 深入学习
-
->这一节是给对算法细节感兴趣的开发者和研究人员的简版说明。
-
-### 🧠 核心理念：Event & Natural Language Vector
-SAG 的底层思想可以用两句话概括：
-
-- **事件原子化（Event Atomization）**  
-  *不再按字符/Token 长度“机械切块”，而是将文档转化为一个个 **语义完整、彼此独立** 的“事件 (Event)”。*
-- **自然语言向量（Natural Language Vector）**  
-  *不只把整段文本编码成向量，而是为每个 Event 抽取多维实体：时间、地点、人物、动作、话题、标签…  
-  它们组成了一个“**由自然语言实体构成的向量**”。*
-
-**关键洞察**：  
-- Event 是 **原子知识单元**  
-- Entity 是 **事件的实体维度**  
-- 事件之间的关系不提前计算，而是 **在查询时动态计算**
-
-### 🧮 三阶段搜索算法（Recall → Expand → Rerank）
-
-
-### 1. Recall：实体驱动召回（Entity-Based Recall）
-
-**目标**：从查询语句出发，找到一批高度相关的 **实体 + 事件**。
-
-- **步骤概要**：
-  - **LLM 解析查询**：抽取结构化实体（TOPIC、ACTION、PERSON…）
-  - **向量检索实体**：在实体向量空间中搜索  
-  - **用实体查事件（SQL）**：通过实体 ID 反查事件  
-  - **事件向量检索**：直接在 Event 向量上查  
-  - **交集过滤 + 权重反向传播**：兼顾语义相似度与实体匹配
-
-
-
-### 2. Expand：基于 BFS 的多跳扩展
-
-**目标**：通过“共享实体模式”在事件-实体空间做 **多跳搜索**，找到更深层的相关信息。
-
-- **做法**：
-  - 将高权重实体视作当前“前沿层”  
-  - 用这些实体在 SQL 中查找新事件  
-  - 对新事件计算相似度和权重，并将权重反向传播给新实体  
-  - 只保留“新出现”的实体，形成下一跳前沿层  
-  - 过程中带有 **权重衰减** + **去重**，无新实体时自动收敛
-
-- **特性**：
-  - 与“六度空间理论”类似：任意两个事件，往往可以通过少量中间实体连接  
-  - 深度 2 通常在 **精度 / 召回 / 延迟** 上达到最优平衡
-  
-- **实体权重示意公式**：
-
-$$W(k_i) = \sum_{e_j \in E} \left[ W_{e2}(e_j) \times \frac{count(k_i, e_j)}{\ln(1 + step_{ij})} \right]$$
-
-### 3. Rerank：基于方向性 PageRank 的排序
-
-在 Recall + Expand 得到的事件子图上，SAG 构建隐式图并运行 **加权 PageRank**：
-
-- **节点**：事件 `e`  
-- **有向边**：共享实体关系，边权由实体权重 + 频次决定：
-
-$$
-W(e_i \rightarrow e_j) = \sum_{k \in (e_i \cap e_j)} W_{\text{entity}}(k) \cdot \ln(1 + \text{freq}(k, e_j))
-$$
-
-- **PageRank 迭代**：
-
-$$
-\mathrm{PR}(e_j) = \frac{1-d}{N} + d \sum_{e_i \in \mathrm{In}(e_j)} \mathrm{PR}(e_i) \cdot \frac{W(e_i \rightarrow e_j)}{\sum\limits_k W(e_i \rightarrow e_k)}
-$$
-
-- **最终综合评分**（四因子加权）：
-
-$$
-S(e) = \alpha \cdot \mathrm{PR}(e) + \beta \cdot \mathrm{Sim}(Q, e) + \gamma \cdot \mathrm{EntityScore}(e) + \delta \cdot \mathrm{TimeDecay}(e)
-$$
-
-其中典型配置：α=0.4，β=0.3，γ=0.2，δ=0.1。
-
----
-
-
-## 🤝 社区与贡献
-
-### 加入我们
-
-- 🌐 官网：[https://zleap.ai](https://zleap.ai)
-- 💬 Discord：[加入讨论](https://discord.com/invite/DRCmtBJhyN)
-- 📧 邮箱：contact@zleap.ai
-- 🐦 Twitter：[@ZleapAI](https://x.com/zleapai)
-
-### 如何贡献
+健康检查：
 
 ```bash
-# 1. Fork并克隆
-git clone https://github.com/your-name/SAG.git
-
-# 2. 创建分支
-git checkout -b feature/amazing-feature
-
-# 3. 提交更改
-git commit -m "feat: add amazing feature"
-
-# 4. 推送
-git push origin feature/amazing-feature
-
-# 5. 开启 Pull Request
+curl http://localhost:4173/health
 ```
 
-**Commit规范**：`feat:` | `fix:` | `docs:` | `refactor:` | `test:` | `chore:`
+创建项目：
 
-### 贡献者墙
+```bash
+curl -X POST http://localhost:4173/api/projects \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Demo 项目"}'
+```
 
+写入文档：
 
+```bash
+curl -X POST http://localhost:4173/ingest \
+  -H 'Content-Type: application/json' \
+  -d '{"sourceId":"项目ID","title":"Demo","content":"# Demo\n\nSAG 可以检索项目文档。","extract":true}'
+```
 
+执行检索：
 
----
+```bash
+curl -X POST http://localhost:4173/api/search \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"SAG 为什么适合多跳检索？","sourceIds":["项目ID"],"strategy":"multi","searchMode":"fast","topK":5,"returnTrace":true}'
+```
 
-## 🙏 致谢
+流式检索过程：
 
-- 感谢所有贡献者
-- 特别感谢[302.AI](https://302.ai)的算力支持
+```bash
+curl -N -X POST http://localhost:4173/api/search/stream \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"解释 SAG 的 event/entity 索引","sourceIds":["项目ID"],"strategy":"multi","returnTrace":true}'
+```
 
----
+## 常用命令
 
-## 📄 许可证
+```bash
+# 类型检查
+npm run typecheck
 
+# 运行测试
+npm test
 
-本项目采用 [Apache-2.0 License](LICENSE)
+# 构建生产版本
+npm run build
 
----
+# 启动生产服务
+npm start
 
-## ⭐ Star History
+# 启动 MCP stdio server
+npm run mcp
+```
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Zleap-AI/SAG&type=Date)](https://star-history.com/#Zleap-AI/SAG&Date)
+## 项目结构
 
----
+```text
+src/
+  ai/                 LLM、Embedding、Rerank 客户端
+  api/                HTTP API
+  config/             环境配置
+  db/                 数据库连接、迁移、Repository、向量工具
+  ingestion/          文档切片和事项提取
+  mcp/                MCP Server
+  observability/      日志和模型调用记录
+  services/           文档处理、搜索、图谱、WebUI 服务
 
-<div align="center">
+web/
+  src/                React WebUI
 
+migrations/           PostgreSQL schema
+test/                 单元测试
+docs/assets/          README 截图和图示资源
+```
 
-**让信息产生连接，让数据成为资产**
+## 常见问题
 
-Made with ❤️ by [Zleap Team](https://zleap.ai)
+### PostgreSQL 连接失败怎么办？
 
-</div>
+先确认数据库已经启动：
 
----
+```bash
+docker compose ps
+```
+
+再确认 `.env` 里的 `DATABASE_URL` 是否正确。
+
+### 提示 pgvector 不存在怎么办？
+
+请确认数据库安装了 pgvector，并执行过：
+
+```sql
+create extension if not exists vector;
+```
+
+如果使用 `docker compose up -d`，镜像已经包含 pgvector。
+
+### 为什么没有真实模型效果？
+
+如果没有配置 `LLM_API_KEY` 和 `EMBEDDING_API_KEY`，系统会进入本地 fallback 模式。这个模式适合测试，不适合判断真实检索质量。
+
+### 上传后处理很慢怎么办？
+
+文档处理会调用 Embedding 和 LLM。速度主要取决于文档数量、切片数量、模型接口速度和并发配置。可以通过 `.env` 调整：
+
+```env
+INGEST_CONCURRENCY=5
+```
+
+### 端口被占用了怎么办？
+
+开发模式可以调整 `.env`：
+
+```env
+HTTP_PORT=4173
+```
+
+Vite WebUI 默认会使用 `5173`，如果端口被占用会自动提示新的地址。
+
+## License
+
+MIT License. See [LICENSE](LICENSE).
