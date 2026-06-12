@@ -10,15 +10,11 @@ This project is an out-of-the-box document retrieval workbench built on SAG. Aft
 
 ![SAG chat workbench](docs/assets/sag-chat.png)
 
-## A New SOTA for RAG
+## RAG SOTA and Benchmark
 
 SAG benchmark reproduction code: [Zleap-AI/SAG-Benchmark](https://github.com/Zleap-AI/SAG-Benchmark)
 
-SAG is a next-generation RAG approach designed for agents. It does not try to simply stuff more chunks into the model. Instead, it redesigns how document knowledge enters the retrieval system.
-
-Traditional vector RAG knows whether two pieces of text are semantically similar, but it does not know who is related to whom or what happened between them. GraphRAG recognizes the value of structure, but many implementations rely on triple extraction, entity merging, community detection, and global graph ranking, which can be costly to build and maintain.
-
-SAG uses a lighter structure that is easier to operate in production:
+SAG is a next-generation RAG approach designed for agents. Instead of stuffing more chunks into the model, it organizes document knowledge with a lighter structure:
 
 ```text
 chunk -> event
@@ -26,21 +22,11 @@ chunk -> entities
 event <-> entities
 ```
 
-Each chunk extracts one complete event and multiple entities from the original text. The event preserves the full semantic unit, while entities build the index and enable relational expansion. This is a one-event-to-many-entities hyperedge structure, instead of a large set of fragile `subject -> predicate -> object` triples.
+Each chunk extracts one complete event and multiple entities. The event preserves the full semantic unit, while entities build the index and enable relational expansion, so retrieval can start from a matched event and continue through multi-hop recall without the rebuild cost of a heavyweight knowledge graph.
 
 ![SAG architecture](docs/assets/paper-sag-architecture.jpeg)
 
-Core advantages of SAG:
-
-- **Better for multi-hop questions**: retrieval can start from a matched event and expand to related events through entity relations.
-- **Not a heavyweight knowledge graph**: no global PageRank dependency and no need to rebuild the whole graph for every incremental update.
-- **Production ready at scale**: events, entities, relations, and vectors are stored in PostgreSQL / pgvector, with stable multi-hop retrieval implemented in SQL.
-- **Agent friendly**: fewer candidates can hit key evidence earlier, reducing downstream LLM reading cost.
-- **Traceable**: final answers still point back to original chunks, making evidence easy to verify.
-
-## Benchmark
-
-Under the same configuration:
+On HotpotQA / 2WikiMultiHop / MuSiQue, under the same configuration:
 
 ```text
 Embedding = bge-large-en-v1.5
@@ -48,17 +34,11 @@ LLM = qwen3.6-flash
 Datasets = HotpotQA / 2WikiMultiHop / MuSiQue
 ```
 
-Compared with HippoRAG 2, SAG achieves clear recall improvements on multi-hop QA. The key result is that **average Recall@2 improves from 68.14% to 79.30%, a gain of 11.16 percentage points, or about 16.4% relative improvement**.
+Compared with HippoRAG 2, SAG achieves clear recall improvements on multi-hop QA: **average Recall@2 improves from 68.14% to 79.30%, a gain of 11.16 percentage points, or about 16.4% relative improvement**. Higher Recall@2 means agents can hit key evidence earlier with less context, reducing token cost, latency, and distraction in multi-turn tasks.
 
 ![SAG benchmark summary](docs/assets/sag-benchmark-simple.png)
 
-Why does Recall@2 matter? Agents should not have to read a huge pile of context on every step. Finding key evidence earlier with fewer results means lower token cost, lower latency, less distraction, and fewer compounding errors in multi-turn tasks.
-
-Other key results:
-
-- MuSiQue Recall@5: SAG 80.04%, HippoRAG 2 65.13%, a gain of 14.91 percentage points.
-- After switching SAG to NV-Embed-v2, MuSiQue Recall@5 further improves to 81.71%, showing that the gain mainly comes from the structure, not merely from a stronger embedding model.
-- A triple-style 1-n-2 structure reaches 63.78% Recall@5 on MuSiQue, while SAG's one-event-to-many-entities hyperedge structure reaches 80.04%.
+On MuSiQue Recall@5, SAG improves from HippoRAG 2's 65.13% to 80.04%; after switching to NV-Embed-v2, it further reaches 81.71%, showing that the gain mainly comes from the structure rather than only a stronger embedding model.
 
 ## What SAG Can Do
 

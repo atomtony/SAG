@@ -10,15 +10,11 @@
 
 ![SAG 对话工作台](docs/assets/sag-chat.png)
 
-## RAG 领域新 SOTA
+## RAG 领域新 SOTA 与 Benchmark
 
 论文复现代码：[Zleap-AI/SAG-Benchmark](https://github.com/Zleap-AI/SAG-Benchmark)
 
-SAG 是面向 Agent 的新一代 RAG 技术路线。它解决的不是“再多塞几个 chunk 给模型”，而是重新设计数据进入检索系统的方式。
-
-传统向量 RAG 只知道文本“像不像”，但不知道“谁和谁发生了什么关系”。GraphRAG 意识到了结构的重要性，但很多方案依赖三元组抽取、实体合并、社区发现和全局图排序，构建和维护成本很高。
-
-SAG 选择了更轻、更适合生产的结构：
+SAG 是面向 Agent 的新一代 RAG 技术路线。它不靠给模型塞更多 chunk，而是用更轻量的结构重新组织文档知识：
 
 ```text
 chunk -> event
@@ -26,21 +22,11 @@ chunk -> entities
 event <-> entities
 ```
 
-一个 chunk 只提取一个完整事项 event，同时从原文中提取多个 entities。event 保留完整语义，entities 负责建立索引和关系扩展。这是一种“一事项对多实体”的超边结构，不再把知识拆成大量脆弱的 `subject -> predicate -> object` 三元组。
+每个 chunk 提取一个完整事项 event 和多个 entities。event 保留完整语义，entities 负责索引和关系扩展，让检索可以从命中事项出发继续多跳召回，同时避免重型知识图谱的全局重建成本。
 
 ![SAG 架构图](docs/assets/paper-sag-architecture.jpeg)
 
-SAG 的核心优势：
-
-- **更适合多跳问题**：从命中事项出发，通过实体关系继续扩展相关事项。
-- **不是重型知识图谱**：不依赖全局 PageRank，也不需要每次增量数据都重建整张图。
-- **可大规模落地**：事项、实体、关系、向量都存进 PostgreSQL / pgvector，用 SQL 做稳定多跳。
-- **对 Agent 更友好**：用更少的候选结果更早命中关键证据，减少后续 LLM 阅读成本。
-- **可追溯**：最终回答仍然回到原文切片，便于查看证据。
-
-## Benchmark
-
-在相同配置下：
+在 HotpotQA / 2WikiMultiHop / MuSiQue 上，使用相同配置：
 
 ```text
 Embedding = bge-large-en-v1.5
@@ -48,17 +34,11 @@ LLM = qwen3.6-flash
 Datasets = HotpotQA / 2WikiMultiHop / MuSiQue
 ```
 
-SAG 对比 HippoRAG 2 在多跳问答召回上取得了明显提升。最关键的是 **平均 Recall@2 从 68.14% 提升到 79.30%，提升 11.16 个百分点，相对提升约 16.4%**。
+SAG 对比 HippoRAG 2 在多跳问答召回上取得了明显提升：**平均 Recall@2 从 68.14% 提升到 79.30%，提升 11.16 个百分点，相对提升约 16.4%**。Recall@2 更高意味着 Agent 可以用更少上下文更早命中关键证据，减少 token 成本、延迟和多轮任务里的干扰。
 
 ![SAG Benchmark 简图](docs/assets/sag-benchmark-simple.png)
 
-为什么 Recall@2 很重要？因为 Agent 不希望每次拿回一大堆上下文。更少结果里更早命中关键证据，意味着更低 token 成本、更低延迟、更少干扰，也意味着多轮任务里错误不容易层层放大。
-
-其他关键结果：
-
-- MuSiQue Recall@5：SAG 80.04%，HippoRAG 2 65.13%，提升 14.91 个百分点。
-- SAG 换成 NV-Embed-v2 后，MuSiQue Recall@5 进一步到 81.71%，说明提升主要来自结构设计，而不是单纯堆 embedding 模型。
-- 三元组式 1-n-2 结构在 MuSiQue Recall@5 为 63.78%，SAG 的一事项多实体超边结构为 80.04%。
+在 MuSiQue Recall@5 上，SAG 从 HippoRAG 2 的 65.13% 提升到 80.04%；换用 NV-Embed-v2 后进一步达到 81.71%，说明收益主要来自结构设计，而不只是更强的 embedding 模型。
 
 ## SAG 能做什么
 
