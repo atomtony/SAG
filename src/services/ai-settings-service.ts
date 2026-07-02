@@ -1,4 +1,4 @@
-import { config, SUPPORTED_EMBEDDING_DIMENSIONS } from "../config/env.js";
+import { config, SUPPORTED_EMBEDDING_DIMENSIONS, DEFAULT_302AI_BASE_URL } from "../config/env.js";
 import {
   getAiProviderSettings,
   upsertAiProviderSettings
@@ -64,11 +64,13 @@ export class AiSettingsService {
       embeddingModel: settings.embeddingModel,
       embeddingDimensions: settings.embeddingDimensions,
       embeddingApiKey,
-      hasRemoteEmbedding: embeddingApiKey.length > 0,
+      hasRemoteEmbedding: embeddingApiKey.length > 0
+        || settings.embeddingBaseUrl !== DEFAULT_302AI_BASE_URL,
       llmBaseUrl: settings.llmBaseUrl,
       llmModel: settings.llmModel,
       llmApiKey,
-      hasRemoteLlm: llmApiKey.length > 0,
+      hasRemoteLlm: llmApiKey.length > 0
+        || settings.llmBaseUrl !== DEFAULT_302AI_BASE_URL,
       llmTimeoutMs: settings.llmTimeoutMs,
       llmMaxRetries: settings.llmMaxRetries,
       defaultSearchMode: readDefaultSearchMode(settings.metadata),

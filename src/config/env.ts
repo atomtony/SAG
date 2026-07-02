@@ -36,5 +36,7 @@ export type AppConfig = z.infer<typeof envSchema>;
 
 export const config: AppConfig = envSchema.parse(process.env);
 
-export const hasRemoteEmbedding = config.EMBEDDING_API_KEY.trim().length > 0;
-export const hasRemoteLlm = config.LLM_API_KEY.trim().length > 0;
+export const hasRemoteEmbedding = config.EMBEDDING_API_KEY.trim().length > 0
+  || config.EMBEDDING_BASE_URL !== DEFAULT_302AI_BASE_URL;
+export const hasRemoteLlm = config.LLM_API_KEY.trim().length > 0
+  || config.LLM_BASE_URL !== DEFAULT_302AI_BASE_URL;
