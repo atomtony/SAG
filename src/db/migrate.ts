@@ -4,8 +4,7 @@ import { fileURLToPath } from "node:url";
 import { pool, closePool } from "./pool.js";
 import { logger } from "../observability/logger.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.resolve(__dirname, "../..");
+const rootDir = process.cwd();
 const migrationsDir = path.join(rootDir, "migrations");
 
 export async function migrate(): Promise<void> {

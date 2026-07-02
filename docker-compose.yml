@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: sag_lite
       POSTGRES_PASSWORD: sag_lite_pass
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - sag_lite_pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -15,6 +15,31 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+    restart: unless-stopped
+    networks:
+      - sag_net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sag_lite_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "4173:4173"
+    env_file: .env
+    environment:
+      # Override DATABASE_URL to use Docker service name instead of localhost
+      DATABASE_URL: postgres://sag_lite:sag_lite_pass@postgres:5432/sag_lite
+    restart: unless-stopped
+    networks:
+      - sag_net
 
 volumes:
   sag_lite_pgdata:
+
+networks:
+  sag_net:
+    driver: bridge

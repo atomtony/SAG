@@ -126,12 +126,47 @@ cp .env.example .env
 
 `.env.example` 已经包含默认配置。真实使用时，请填入自己的 LLM 和 Embedding API Key。
 
-### 4. 启动 PostgreSQL
+### 4. 完整 Docker 部署（推荐）
 
-使用 Docker：
+一条命令启动 PostgreSQL + SAG 应用：
 
 ```bash
+# 先确认 .env 里填好了你的 API Key（LLM / Embedding）
+cp .env.example .env
+# 编辑 .env，填入 EMBEDDING_API_KEY 和 LLM_API_KEY
+
+# 一键启动
 docker compose up -d
+```
+
+等待几秒让数据库初始化，然后访问：
+
+```text
+http://localhost:4173
+```
+
+**说明：**
+- `docker-compose.yml` 中的 `database_url` 已自动指向容器内的 PostgreSQL，无需手动修改 `.env`
+- `app` 服务会自动等待 PostgreSQL 就绪后再启动
+- 首次启动会自动执行数据库迁移（migration）
+- 日志查看：`docker compose logs -f app`
+- 重启服务：`docker compose restart app`
+- 停止所有：`docker compose down`
+
+如果你偏好本地开发模式（热更新调试），也可以只启动 PostgreSQL：
+
+```bash
+docker compose up -d postgres
+```
+
+然后按下面的本地开发步骤操作。
+
+### 5. 启动 PostgreSQL（仅本地开发用）
+
+使用 Docker（仅启动数据库）：
+
+```bash
+docker compose up -d postgres
 ```
 
 不想用 Docker，也可以在 macOS 上用 Homebrew：
@@ -150,14 +185,14 @@ brew services start postgresql@17
 DATABASE_URL=postgres://你的用户名@localhost:5432/sag_lite
 ```
 
-### 5. 安装依赖并初始化数据库
+### 6. 安装依赖并初始化数据库
 
 ```bash
 npm install
 npm run db:setup
 ```
 
-### 6. 启动开发服务
+### 7. 启动开发服务
 
 ```bash
 npm run dev
@@ -170,7 +205,7 @@ WebUI: http://localhost:5173
 API:   http://localhost:4173
 ```
 
-### 7. 构建并启动生产服务
+### 8. 构建并启动生产服务
 
 ```bash
 npm run build

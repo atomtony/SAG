@@ -129,12 +129,47 @@ cp .env.example .env
 
 `.env.example` already contains default values. For real usage, fill in your own LLM and Embedding API keys.
 
-### 4. Start PostgreSQL
+### 4. Full Docker Deployment (Recommended)
 
-Using Docker:
+Start PostgreSQL + SAG app with a single command:
 
 ```bash
+# First, fill in your API keys in .env
+cp .env.example .env
+# Edit .env and set EMBEDDING_API_KEY and LLM_API_KEY
+
+# One-command launch
 docker compose up -d
+```
+
+Wait a few seconds for the database to initialize, then visit:
+
+```text
+http://localhost:4173
+```
+
+**Notes:**
+- The `DATABASE_URL` in `docker-compose.yml` already points to the container's PostgreSQL — no need to edit `.env`
+- The `app` service waits for PostgreSQL to be healthy before starting
+- Database migrations run automatically on first startup
+- View logs: `docker compose logs -f app`
+- Restart the app: `docker compose restart app`
+- Stop everything: `docker compose down`
+
+If you prefer local development (hot-reload), you can start only PostgreSQL:
+
+```bash
+docker compose up -d postgres
+```
+
+Then follow the local development steps below.
+
+### 5. Start PostgreSQL (for Local Development Only)
+
+Using Docker (database only):
+
+```bash
+docker compose up -d postgres
 ```
 
 If you do not want to use Docker, you can use Homebrew on macOS:
@@ -153,14 +188,14 @@ If you use a local PostgreSQL instance, update `DATABASE_URL` in `.env`, for exa
 DATABASE_URL=postgres://your_user@localhost:5432/sag_lite
 ```
 
-### 5. Install Dependencies and Initialize the Database
+### 6. Install Dependencies and Initialize the Database
 
 ```bash
 npm install
 npm run db:setup
 ```
 
-### 6. Start the Development Server
+### 7. Start the Development Server
 
 ```bash
 npm run dev
@@ -173,7 +208,7 @@ WebUI: http://localhost:5173
 API:   http://localhost:4173
 ```
 
-### 7. Build and Start Production
+### 8. Build and Start Production
 
 ```bash
 npm run build
